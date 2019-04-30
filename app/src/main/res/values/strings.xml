@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">AskMentor</string>
+    <string name="duvida">Qual é a sua dúvida?</string>
+    <string name="perguntar">PERGUNTAR</string>
+    <string name="configuracoes">Configurações</string>
+
+    <string name="open_drawer">Abrir</string>
+    <string name="close_drawer">Fechar</string>
 </resources>
