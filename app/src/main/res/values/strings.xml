@@ -3,7 +3,12 @@
     <string name="duvida">Qual é a sua dúvida?</string>
     <string name="perguntar">PERGUNTAR</string>
     <string name="configuracoes">Configurações</string>
-
     <string name="open_drawer">Abrir</string>
     <string name="close_drawer">Fechar</string>
+    <string name="login">E-mail</string>
+    <string name="password">Senha</string>
+    <string name="login_btn">ENTRAR</string>
+    <string name="register_btn">NÃO TENHO CONTA</string>
+    <string name="facebook_app_id">1254593851357640</string>
+    <string name="fb_login_protocol_scheme">fb1254593851357640</string>
 </resources>
