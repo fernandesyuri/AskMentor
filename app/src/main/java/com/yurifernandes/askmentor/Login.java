@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.facebook.AccessToken;
@@ -13,9 +14,10 @@ import com.facebook.FacebookException;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 
-public class Login extends Activity {
+public class Login extends Activity implements View.OnClickListener {
     private CallbackManager callbackManager;
-    private LoginButton loginButton;
+    private LoginButton loginFacebook;
+    private Button registerBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,13 +26,15 @@ public class Login extends Activity {
 
         callbackManager = CallbackManager.Factory.create();
 
-        loginButton = (LoginButton) findViewById(R.id.login_button);
-        loginButton.setReadPermissions("email");
+        loginFacebook = (LoginButton) findViewById(R.id.login_button);
+        loginFacebook.setReadPermissions("email");
 
-        loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+        registerBtn = (Button) findViewById(R.id.button2);
+        registerBtn.setOnClickListener(this);
+
+        loginFacebook.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-                Toast.makeText(Login.this, "Logado com sucesso", Toast.LENGTH_LONG).show();
                 AccessToken accessToken = loginResult.getAccessToken();
 
                 if (isLoggedIn()) {
@@ -50,14 +54,12 @@ public class Login extends Activity {
         });
     }
 
-    public void callActivity()
-    {
+    public void callActivity() {
         Intent intent = new Intent(Login.this, Teste.class);
         startActivity(intent);
     }
 
-    public boolean isLoggedIn()
-    {
+    public boolean isLoggedIn() {
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
         return accessToken != null;
     }
@@ -68,9 +70,16 @@ public class Login extends Activity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    public void onClickFacebookButton(View view)
-    {
-        if(view == loginButton)
-            loginButton.performClick();
+    public void onClickFacebookButton(View view) {
+        if(view == loginFacebook)
+            loginFacebook.performClick();
+    }
+
+    @Override
+    public void onClick(View v) {
+        if(v == registerBtn) {
+            Intent intent = new Intent(Login.this, Cadastro.class);
+            startActivity(intent);
+        }
     }
 }

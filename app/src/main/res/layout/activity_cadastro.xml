@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="#5BA6FF"
     android:orientation="vertical"
-    tools:context=".Login">
+    tools:context=".Cadastro">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -16,7 +16,7 @@
         android:orientation="vertical">
 
         <ImageView
-            android:id="@+id/imageView2"
+            android:id="@+id/imageView3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
@@ -37,8 +37,9 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="50dp"
             android:layout_marginRight="50dp"
+            android:layout_marginBottom="25dp"
             android:ems="10"
-            android:hint="@string/login"
+            android:hint="@string/name"
             android:inputType="textEmailAddress"
             android:textColor="#FFFFFF"
             android:textColorHint="#FFFFFF" />
@@ -49,34 +50,39 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="50dp"
             android:layout_marginRight="50dp"
-            android:layout_marginBottom="50dp"
+            android:layout_marginBottom="25dp"
             android:ems="10"
-            android:hint="@string/password"
+            android:hint="@string/login"
             android:inputType="textPassword"
             android:textColor="#FFFFFF"
             android:textColorHint="#FFFFFF" />
 
-        <Button
-            android:id="@+id/button1"
+        <EditText
+            android:id="@+id/editText3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="100dp"
-            android:layout_marginTop="50dp"
-            android:layout_marginRight="100dp"
-            android:background="@drawable/border_button"
-            android:text="@string/login_btn"
-            android:textColor="#FFFFFF" />
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
+            android:layout_marginBottom="25dp"
+            android:ems="10"
+            android:hint="@string/password"
+            android:inputType="textEmailAddress"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#FFFFFF" />
 
-        <Button
-            android:id="@+id/button2"
+        <EditText
+            android:id="@+id/editText4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="100dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginRight="100dp"
-            android:background="@drawable/border_button"
-            android:text="@string/register_btn"
-            android:textColor="#FFFFFF" />
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
+            android:layout_marginBottom="25dp"
+            android:ems="10"
+            android:hint="@string/repeat_password"
+            android:inputType="textEmailAddress"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#FFFFFF" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -86,15 +92,16 @@
         android:gravity="center"
         android:orientation="vertical">
 
-        <com.facebook.login.widget.LoginButton
-            android:id="@+id/login_button"
-            android:layout_width="wrap_content"
+        <Button
+            android:id="@+id/button4"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="30dp"
-            android:layout_marginBottom="30dp"
-            android:layout_weight="1" />
-
+            android:layout_marginLeft="100dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="100dp"
+            android:background="@drawable/border_button"
+            android:text="@string/register"
+            android:textColor="#FFFFFF" />
     </LinearLayout>
 
 </LinearLayout>
