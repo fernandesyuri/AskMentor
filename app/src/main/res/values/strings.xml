@@ -5,8 +5,11 @@
     <string name="configuracoes">Configurações</string>
     <string name="open_drawer">Abrir</string>
     <string name="close_drawer">Fechar</string>
+    <string name="name">Nome</string>
     <string name="login">E-mail</string>
     <string name="password">Senha</string>
+    <string name="repeat_password">Repetir Senha</string>
+    <string name="register">CADASTRAR</string>
     <string name="login_btn">ENTRAR</string>
     <string name="register_btn">NÃO TENHO CONTA</string>
     <string name="facebook_app_id">1254593851357640</string>

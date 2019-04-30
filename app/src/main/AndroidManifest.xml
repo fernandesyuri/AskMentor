@@ -20,6 +20,8 @@
 
         <service android:name="org.eclipse.paho.android.service.MqttService" />
 
+        <activity android:name=".Cadastro"></activity>
+        <activity android:name=".Teste" />
         <activity android:name=".Login">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

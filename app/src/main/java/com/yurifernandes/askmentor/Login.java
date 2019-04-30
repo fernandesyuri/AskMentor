@@ -23,10 +23,11 @@ public class Login extends Activity implements View.OnClickListener {
     private AWSAppSyncClient mAWSAppSyncClient;
 
     private CallbackManager callbackManager;
-    private LoginButton loginButton;
     private Button btnLogin;
 
     private CognitoCachingCredentialsProvider credentialsProvider;
+    private LoginButton loginFacebook;
+    private Button registerBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,13 +48,15 @@ public class Login extends Activity implements View.OnClickListener {
 
         callbackManager = CallbackManager.Factory.create();
 
-        loginButton = (LoginButton) findViewById(R.id.login_button);
-        loginButton.setReadPermissions("email");
+        loginFacebook = (LoginButton) findViewById(R.id.login_button);
+        loginFacebook.setReadPermissions("email");
 
-        loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+        registerBtn = (Button) findViewById(R.id.button2);
+        registerBtn.setOnClickListener(this);
+
+        loginFacebook.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-                Toast.makeText(Login.this, "Logado com sucesso", Toast.LENGTH_LONG).show();
                 AccessToken accessToken = loginResult.getAccessToken();
 
                 if (isLoggedIn()) {
@@ -92,12 +95,17 @@ public class Login extends Activity implements View.OnClickListener {
     }
 
     public void onClickFacebookButton(View view) {
-        if (view == loginButton)
-            loginButton.performClick();
+        if(view == loginFacebook)
+            loginFacebook.performClick();
     }
 
     @Override
     public void onClick(View v) {
+        if(v == registerBtn) {
+            Intent intent = new Intent(Login.this, Cadastro.class);
+            startActivity(intent);
+        }
+
         if (v == btnLogin) {
 
         }
