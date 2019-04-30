@@ -52,8 +52,8 @@ public class Login extends Activity {
 
     public void callActivity()
     {
-        //Intent intent = new Intent(Login.this, Pergunta.class);
-        //startActivity(intent);
+        Intent intent = new Intent(Login.this, Teste.class);
+        startActivity(intent);
     }
 
     public boolean isLoggedIn()
