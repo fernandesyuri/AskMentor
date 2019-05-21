@@ -10,7 +10,6 @@ import android.widget.Toast;
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
 import com.amazonaws.mobile.config.AWSConfiguration;
 import com.amazonaws.mobileconnectors.appsync.AWSAppSyncClient;
-import com.amazonaws.regions.Regions;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -27,14 +26,14 @@ public class Login extends Activity implements View.OnClickListener {
 
     private CognitoCachingCredentialsProvider credentialsProvider;
     private LoginButton loginFacebook;
-    private Button registerBtn;
+    private Button registerBtn, loginBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        mAWSAppSyncClient = AWSAppSyncClient.builder()
+       /* mAWSAppSyncClient = AWSAppSyncClient.builder()
                 .context(getApplicationContext())
                 .awsConfiguration(new AWSConfiguration(getApplicationContext()))
                 .build();
@@ -44,12 +43,15 @@ public class Login extends Activity implements View.OnClickListener {
                 getApplicationContext(),
                 "us-east-1:2d957a98-f39c-40f7-bcaa-f7ef27ec4566", // ID do grupo de identidades
                 Regions.US_EAST_1 // Região
-        );
+        ); */
 
         callbackManager = CallbackManager.Factory.create();
 
         loginFacebook = (LoginButton) findViewById(R.id.login_button);
         loginFacebook.setReadPermissions("email");
+
+        loginBtn = (Button) findViewById(R.id.button1);
+        loginBtn.setOnClickListener(this);
 
         registerBtn = (Button) findViewById(R.id.button2);
         registerBtn.setOnClickListener(this);
@@ -79,7 +81,7 @@ public class Login extends Activity implements View.OnClickListener {
     }
 
     public void callActivity() {
-        Intent intent = new Intent(Login.this, Teste.class);
+        Intent intent = new Intent(Login.this, Drawer.class);
         startActivity(intent);
     }
 
@@ -107,7 +109,8 @@ public class Login extends Activity implements View.OnClickListener {
         }
 
         if (v == btnLogin) {
-
+            Intent intent = new Intent(Login.this, Drawer.class);
+            startActivity(intent);
         }
     }
 }
