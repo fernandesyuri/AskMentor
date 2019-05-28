@@ -25,6 +25,10 @@
     <string name="take_picture">Tire uma foto</string>
     <string name="menu_questions">Minhas Perguntas</string>
     <string name="menu_answers">Minhas Respostas</string>
+    <string name="menu_available_questions">Perguntas Disponíveis</string>
     <string name="menu_account">Minha Conta</string>
-    <string name="menu_exit">Sair</string>
+    <string name="menu_home">Início</string>
+    <string name="menu_exit">Desconectar</string>
+    <string name="change_avatar">Mudar Foto de Perfil</string>
+    <string name="save">Salvar</string>
 </resources>

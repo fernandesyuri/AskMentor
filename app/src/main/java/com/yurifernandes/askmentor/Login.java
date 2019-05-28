@@ -8,7 +8,6 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
-import com.amazonaws.mobile.config.AWSConfiguration;
 import com.amazonaws.mobileconnectors.appsync.AWSAppSyncClient;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -81,7 +80,7 @@ public class Login extends Activity implements View.OnClickListener {
     }
 
     public void callActivity() {
-        Intent intent = new Intent(Login.this, Drawer.class);
+        Intent intent = new Intent(Login.this, Home.class);
         startActivity(intent);
     }
 
@@ -109,7 +108,7 @@ public class Login extends Activity implements View.OnClickListener {
         }
 
         if (v == btnLogin) {
-            Intent intent = new Intent(Login.this, Drawer.class);
+            Intent intent = new Intent(Login.this, Home.class);
             startActivity(intent);
         }
     }

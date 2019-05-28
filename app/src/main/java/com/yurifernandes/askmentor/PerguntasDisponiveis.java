@@ -1,26 +1,32 @@
 package com.yurifernandes.askmentor;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.MenuItem;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
-
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import java.util.ArrayList;
+import java.util.List;
 
-public class Drawer extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class PerguntasDisponiveis extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_drawer);
+        setContentView(R.layout.activity_perguntas_disponiveis);
 
+        //Navigation Drawer
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setDisplayShowTitleEnabled(true);
+        getSupportActionBar().setTitle("Perguntas Disponíveis");
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
@@ -30,6 +36,16 @@ public class Drawer extends AppCompatActivity implements NavigationView.OnNaviga
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
+
+
+        //List View
+        List<String> teste = new ArrayList<>();
+        teste.add("Pergunta1");
+        teste.add("Pergunta2");
+        teste.add("Pergunta3");
+        ListView listaTeste = (ListView) findViewById(R.id.listView);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, teste);
+        listaTeste.setAdapter(adapter);
     }
 
     @Override
@@ -47,35 +63,29 @@ public class Drawer extends AppCompatActivity implements NavigationView.OnNaviga
         return false;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_questions) {
-            // Handle the camera action
+        if (id == R.id.nav_home) {
+            Intent i = new Intent(this, Home.class);
+            startActivity(i);
+        } else if (id == R.id.nav_questions) {
+            Intent i = new Intent(this, Perguntas.class);
+            startActivity(i);
         } else if (id == R.id.nav_answers) {
-
+            Intent i = new Intent(this, Respostas.class);
+            startActivity(i);
+        } else if (id == R.id.nav_available_questions) {
+            Intent i = new Intent(this, PerguntasDisponiveis.class);
+            startActivity(i);
         } else if (id == R.id.nav_account) {
-
+            Intent i = new Intent(this, Conta.class);
+            startActivity(i);
         } else if (id == R.id.nav_exit) {
-
+            Intent i = new Intent(this, Login.class);
+            startActivity(i);
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);

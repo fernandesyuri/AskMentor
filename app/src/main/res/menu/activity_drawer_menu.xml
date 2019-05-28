@@ -5,6 +5,10 @@
 
     <group android:checkableBehavior="single">
         <item
+            android:id="@+id/nav_home"
+            android:icon="@drawable/baseline_home_24"
+            android:title="@string/menu_home" />
+        <item
             android:id="@+id/nav_questions"
             android:icon="@drawable/baseline_arrow_forward_24"
             android:title="@string/menu_questions" />
@@ -12,6 +16,10 @@
             android:id="@+id/nav_answers"
             android:icon="@drawable/baseline_arrow_back_24"
             android:title="@string/menu_answers" />
+        <item
+            android:id="@+id/nav_available_questions"
+            android:icon="@drawable/baseline_search_24"
+            android:title="@string/menu_available_questions" />
         <item
             android:id="@+id/nav_account"
             android:icon="@drawable/baseline_account_circle_24"
