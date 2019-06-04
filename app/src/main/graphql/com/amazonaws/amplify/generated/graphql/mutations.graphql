@@ -1,0 +1,22 @@
+# this is an auto generated file. This will be overwritten
+mutation CreateAvailable($input: CreateAvailableInput!) {
+  createAvailable(input: $input) {
+    id
+    name
+    description
+  }
+}
+mutation UpdateAvailable($input: UpdateAvailableInput!) {
+  updateAvailable(input: $input) {
+    id
+    name
+    description
+  }
+}
+mutation DeleteAvailable($input: DeleteAvailableInput!) {
+  deleteAvailable(input: $input) {
+    id
+    name
+    description
+  }
+}

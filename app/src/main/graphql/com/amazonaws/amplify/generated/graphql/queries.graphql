@@ -1,0 +1,22 @@
+# this is an auto generated file. This will be overwritten
+query GetAvailable($id: ID!) {
+  getAvailable(id: $id) {
+    id
+    name
+    description
+  }
+}
+query ListAvailables(
+  $filter: ModelAvailableFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listAvailables(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      name
+      description
+    }
+    nextToken
+  }
+}

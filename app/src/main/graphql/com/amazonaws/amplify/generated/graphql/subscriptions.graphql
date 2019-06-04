@@ -1,0 +1,22 @@
+# this is an auto generated file. This will be overwritten
+subscription OnCreateAvailable {
+  onCreateAvailable {
+    id
+    name
+    description
+  }
+}
+subscription OnUpdateAvailable {
+  onUpdateAvailable {
+    id
+    name
+    description
+  }
+}
+subscription OnDeleteAvailable {
+  onDeleteAvailable {
+    id
+    name
+    description
+  }
+}
