@@ -21,6 +21,34 @@
             "UnauthRoleName": "askmentor-20190604113823-unauthRole",
             "StackName": "askmentor-20190604113823",
             "StackId": "arn:aws:cloudformation:us-east-1:746528341146:stack/askmentor-20190604113823/68230680-86d6-11e9-a275-126f3d94de7e"
+        },
+        "categories": {
+            "auth": {
+                "askMentorCognito": {
+                    "hostedUIProviderCreds": "[{\"ProviderName\":\"Facebook\",\"client_id\":\"1254593851357640\",\"client_secret\":\"fa961aa95dd16409b9f3d4836b30c559\"}]",
+                    "facebookAppId": "1254593851357640"
+                }
+            }
+        }
+    },
+    "yuri": {
+        "awscloudformation": {
+            "AuthRoleName": "askmentor-20190604150419-authRole",
+            "UnauthRoleArn": "arn:aws:iam::746528341146:role/askmentor-20190604150419-unauthRole",
+            "AuthRoleArn": "arn:aws:iam::746528341146:role/askmentor-20190604150419-authRole",
+            "Region": "us-east-1",
+            "DeploymentBucketName": "askmentor-20190604150419-deployment",
+            "UnauthRoleName": "askmentor-20190604150419-unauthRole",
+            "StackName": "askmentor-20190604150419",
+            "StackId": "arn:aws:cloudformation:us-east-1:746528341146:stack/askmentor-20190604150419/2d96c020-86f3-11e9-b7f8-0eaaceea2200"
+        },
+        "categories": {
+            "auth": {
+                "askMentorCognito": {
+                    "facebookAppId": "1254593851357640",
+                    "hostedUIProviderCreds": "[{\"ProviderName\":\"Facebook\",\"client_id\":\"1254593851357640\",\"client_secret\":\"fa961aa95dd16409b9f3d4836b30c559\"}]"
+                }
+            }
         }
     }
 }
