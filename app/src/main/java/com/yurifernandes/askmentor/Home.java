@@ -10,8 +10,18 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.amazonaws.mobile.client.AWSMobileClient;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class Home extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+    private TextView name, email;
+    private String teste;
+    final Map<String, String> attributes = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +94,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
             Intent i = new Intent(this, Conta.class);
             startActivity(i);
         } else if (id == R.id.nav_exit) {
+            AWSMobileClient.getInstance().signOut();
             Intent i = new Intent(this, Login.class);
             startActivity(i);
         }

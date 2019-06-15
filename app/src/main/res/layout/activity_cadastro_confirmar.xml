@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="#5BA6FF"
     android:orientation="vertical"
-    tools:context=".Cadastro">
+    tools:context=".CadastroConfirmar">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -39,8 +39,8 @@
             android:layout_marginRight="50dp"
             android:layout_marginBottom="25dp"
             android:ems="10"
-            android:hint="@string/name"
-            android:inputType="textPersonName"
+            android:hint="@string/login"
+            android:inputType="textEmailAddress"
             android:textColor="#FFFFFF"
             android:textColorHint="#FFFFFF" />
 
@@ -52,34 +52,8 @@
             android:layout_marginRight="50dp"
             android:layout_marginBottom="25dp"
             android:ems="10"
-            android:hint="@string/login"
-            android:inputType="textEmailAddress"
-            android:textColor="#FFFFFF"
-            android:textColorHint="#FFFFFF" />
-
-        <EditText
-            android:id="@+id/editText3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="50dp"
-            android:layout_marginRight="50dp"
-            android:layout_marginBottom="25dp"
-            android:ems="10"
-            android:hint="@string/password"
-            android:inputType="textPassword"
-            android:textColor="#FFFFFF"
-            android:textColorHint="#FFFFFF" />
-
-        <EditText
-            android:id="@+id/editText4"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="50dp"
-            android:layout_marginRight="50dp"
-            android:layout_marginBottom="25dp"
-            android:ems="10"
-            android:hint="@string/repeat_password"
-            android:inputType="textPassword"
+            android:hint="@string/code"
+            android:inputType="number"
             android:textColor="#FFFFFF"
             android:textColorHint="#FFFFFF" />
 
@@ -100,7 +74,7 @@
             android:layout_marginTop="10dp"
             android:layout_marginRight="100dp"
             android:background="@drawable/border_button"
-            android:text="@string/register"
+            android:text="@string/confirmRegister"
             android:textColor="#FFFFFF" />
     </LinearLayout>
 

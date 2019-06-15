@@ -25,7 +25,6 @@
         "categories": {
             "auth": {
                 "askMentorCognito": {
-                    "hostedUIProviderCreds": "[{\"ProviderName\":\"Facebook\",\"client_id\":\"1254593851357640\",\"client_secret\":\"fa961aa95dd16409b9f3d4836b30c559\"}]",
                     "facebookAppId": "1254593851357640"
                 }
             }
@@ -47,6 +46,25 @@
                 "askMentorCognito": {
                     "facebookAppId": "1254593851357640",
                     "hostedUIProviderCreds": "[{\"ProviderName\":\"Facebook\",\"client_id\":\"1254593851357640\",\"client_secret\":\"fa961aa95dd16409b9f3d4836b30c559\"}]"
+                }
+            }
+        }
+    },
+    "otavio": {
+        "awscloudformation": {
+            "AuthRoleName": "askmentor-otavio-20190615121727-authRole",
+            "UnauthRoleArn": "arn:aws:iam::746528341146:role/askmentor-otavio-20190615121727-unauthRole",
+            "AuthRoleArn": "arn:aws:iam::746528341146:role/askmentor-otavio-20190615121727-authRole",
+            "Region": "us-east-1",
+            "DeploymentBucketName": "askmentor-otavio-20190615121727-deployment",
+            "UnauthRoleName": "askmentor-otavio-20190615121727-unauthRole",
+            "StackName": "askmentor-otavio-20190615121727",
+            "StackId": "arn:aws:cloudformation:us-east-1:746528341146:stack/askmentor-otavio-20190615121727/aee50020-8f80-11e9-aed1-0a6bdb6a0e76"
+        },
+        "categories": {
+            "auth": {
+                "askmentorOtavio": {
+                    "facebookAppId": "1254593851357640"
                 }
             }
         }

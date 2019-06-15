@@ -1,6 +1,6 @@
 {
 	"auth": {
-		"askMentorCognito": {
+		"askmentorOtavio": {
 			"service": "Cognito",
 			"providerPlugin": "awscloudformation"
 		}
