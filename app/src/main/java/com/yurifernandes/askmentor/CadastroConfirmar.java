@@ -16,7 +16,7 @@ import com.amazonaws.mobile.client.results.UserCodeDeliveryDetails;
 
 public class CadastroConfirmar extends AppCompatActivity implements View.OnClickListener {
     private Button registerBtn;
-    private EditText email, code;
+    private EditText code;
     private String emailCadastrado;
     private final String TAG = AuthenticationActivity.class.getSimpleName();
 
@@ -32,46 +32,39 @@ public class CadastroConfirmar extends AppCompatActivity implements View.OnClick
         Bundle dados = intent.getExtras();
 
         emailCadastrado = dados.getString("email");
-        email = (EditText) findViewById(R.id.editText1);
-        code = (EditText) findViewById(R.id.editText2);
+        code = (EditText) findViewById(R.id.editText1);
     }
 
     @Override
     public void onClick(View view) {
         if(view == registerBtn) {
-            if (email.getText().toString().equals(emailCadastrado)) {
-                AWSMobileClient.getInstance().confirmSignUp(email.getText().toString(), code.getText().toString(), new Callback<SignUpResult>() {
-                    @Override
-                    public void onResult(final SignUpResult signUpResult) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Log.d(TAG, "Sign-up callback state: " + signUpResult.getConfirmationState());
-                                if (!signUpResult.getConfirmationState()) {
-                                    final UserCodeDeliveryDetails details = signUpResult.getUserCodeDeliveryDetails();
-                                    Toast.makeText(getApplicationContext(), "Você entra aqui? " + details.getDestination(), Toast.LENGTH_LONG).show();
-                                } else {
-                                    Toast.makeText(getApplicationContext(), "Cadastrado com Sucesso!", Toast.LENGTH_LONG).show();
-                                    Intent intent = new Intent(CadastroConfirmar.this, Login.class);
-                                    startActivity(intent);
-                                }
+            AWSMobileClient.getInstance().confirmSignUp(emailCadastrado, code.getText().toString(), new Callback<SignUpResult>() {
+                @Override
+                public void onResult(final SignUpResult signUpResult) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (!signUpResult.getConfirmationState()) {
+                                final UserCodeDeliveryDetails details = signUpResult.getUserCodeDeliveryDetails();
+                            } else {
+                                Toast.makeText(getApplicationContext(), "Cadastrado com Sucesso!", Toast.LENGTH_LONG).show();
+                                Intent intent = new Intent(CadastroConfirmar.this, Login.class);
+                                startActivity(intent);
                             }
-                        });
-                    }
+                        }
+                    });
+                }
 
-                    @Override
-                    public void onError(final Exception e) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(getApplicationContext(), "Código incorreto!", Toast.LENGTH_LONG).show();
-                            }
-                        });
-                    }
-                });
-            } else {
-                Toast.makeText(getApplicationContext(), "Email digitado incorreto", Toast.LENGTH_LONG).show();
-            }
+                @Override
+                public void onError(final Exception e) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(), "Código incorreto!", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
+            });
         }
     }
 }

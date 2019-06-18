@@ -39,19 +39,6 @@
             android:layout_marginRight="50dp"
             android:layout_marginBottom="25dp"
             android:ems="10"
-            android:hint="@string/login"
-            android:inputType="textEmailAddress"
-            android:textColor="#FFFFFF"
-            android:textColorHint="#FFFFFF" />
-
-        <EditText
-            android:id="@+id/editText2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="50dp"
-            android:layout_marginRight="50dp"
-            android:layout_marginBottom="25dp"
-            android:ems="10"
             android:hint="@string/code"
             android:inputType="number"
             android:textColor="#FFFFFF"

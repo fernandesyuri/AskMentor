@@ -81,6 +81,7 @@ public class Cadastro extends Activity implements View.OnClickListener {
                                     Intent intent = new Intent(Cadastro.this, CadastroConfirmar.class);
                                     intent.putExtras(bundle);
                                     startActivity(intent);
+                                    finish();
                                 }
                             }
                         });
@@ -88,12 +89,33 @@ public class Cadastro extends Activity implements View.OnClickListener {
 
                     @Override
                     public void onError(Exception e) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(getApplicationContext(), "ERRO!", Toast.LENGTH_LONG).show();
-                            }
-                        });
+                        if(e instanceof com.amazonaws.services.cognitoidentityprovider.model.UsernameExistsException) {
+                            AWSMobileClient.getInstance().resendSignUp(email.getText().toString(), new Callback<SignUpResult>() {
+                                @Override
+                                public void onResult(SignUpResult signUpResult) {
+                                    Toast.makeText(getApplicationContext(), "Código de verificação enviado para " + signUpResult.getUserCodeDeliveryDetails().getDestination(), Toast.LENGTH_LONG).show();
+                                    Bundle bundle = new Bundle();
+                                    bundle.putString("email", email.getText().toString());
+                                    Intent intent = new Intent(Cadastro.this, CadastroConfirmar.class);
+                                    intent.putExtras(bundle);
+                                    startActivity(intent);
+                                    finish();
+                                }
+
+                                @Override
+                                public void onError(Exception err) {
+                                    Log.e(TAG, err.getMessage());
+                                }
+                            });
+                        } else {
+
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(getApplicationContext(), "ERRO!", Toast.LENGTH_LONG).show();
+                                }
+                            });
+                        }
                     }
                 });
             }

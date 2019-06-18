@@ -17,7 +17,6 @@ import com.amazonaws.mobile.client.results.SignInResult;
 public class Login extends Activity implements View.OnClickListener {
     private EditText username, password, newpassword;
     private Button registerBtn, loginBtn;
-    private final String TAG = AuthenticationActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,7 +26,7 @@ public class Login extends Activity implements View.OnClickListener {
         loginBtn = findViewById(R.id.button1);
         loginBtn.setOnClickListener(this);
 
-        registerBtn = findViewById(R.id.button1);
+        registerBtn = findViewById(R.id.button2);
         registerBtn.setOnClickListener(this);
 
         username = (EditText) findViewById(R.id.editText1);
@@ -35,13 +34,9 @@ public class Login extends Activity implements View.OnClickListener {
 
         AWSMobileClient.getInstance().initialize(getApplicationContext(), new Callback<UserStateDetails>() {
                 @Override
-                public void onResult(UserStateDetails userStateDetails) {
-                    Log.i("INIT", "onResult: " + userStateDetails.getUserState());
-                }
+                public void onResult(UserStateDetails userStateDetails) {}
                 @Override
-                public void onError(Exception e) {
-                    Log.e("INIT", "Initialization error.", e);
-                }
+                public void onError(Exception e) {}
             }
         );
     }
@@ -54,36 +49,39 @@ public class Login extends Activity implements View.OnClickListener {
         }
 
         if (v == loginBtn) {
-            AWSMobileClient.getInstance().signIn(username.getText().toString(), password.getText().toString(), null, new Callback<SignInResult>() {
-                @Override
-                public void onResult(final SignInResult signInResult) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Log.d(TAG, "Sign-in callback state: " + signInResult.getSignInState());
-                            switch (signInResult.getSignInState()) {
-                                case DONE:
-                                    Intent intent = new Intent(Login.this, Home.class);
-                                    startActivity(intent);
-                                    break;
-                                default:
-                                    Toast.makeText(getApplicationContext(), "Unsupported sign-in confirmation:" + signInResult.getSignInState(), Toast.LENGTH_SHORT).show();
-                                    break;
+            if (username == null || password == null) {
+                Toast.makeText(getApplicationContext(), "Digite Usuário e Senha!", Toast.LENGTH_LONG).show();
+            } else {
+                AWSMobileClient.getInstance().signIn(username.getText().toString(), password.getText().toString(), null, new Callback<SignInResult>() {
+                    @Override
+                    public void onResult(final SignInResult signInResult) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                switch (signInResult.getSignInState()) {
+                                    case DONE:
+                                        Intent intent = new Intent(Login.this, Home.class);
+                                        startActivity(intent);
+                                        break;
+                                    default:
+                                        Toast.makeText(getApplicationContext(), "Unsupported sign-in confirmation:" + signInResult.getSignInState(), Toast.LENGTH_SHORT).show();
+                                        break;
+                                }
                             }
-                        }
-                    });
-                }
+                        });
+                    }
 
-                @Override
-                public void onError(final Exception e) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(getApplicationContext(), "Usuário ou Senha incorretos!", Toast.LENGTH_LONG).show();
-                        }
-                    });
-                }
-            });
+                    @Override
+                    public void onError(final Exception e) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(getApplicationContext(), "Usuário ou Senha inválidos!", Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    }
+                });
+            }
         }
     }
 }
