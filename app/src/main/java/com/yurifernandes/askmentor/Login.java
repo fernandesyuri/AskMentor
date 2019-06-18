@@ -15,8 +15,8 @@ import com.amazonaws.mobile.client.UserStateDetails;
 import com.amazonaws.mobile.client.results.SignInResult;
 
 public class Login extends Activity implements View.OnClickListener {
-    private EditText username, password, newpassword;
-    private Button registerBtn, loginBtn;
+    private EditText username, password;
+    private Button registerBtn, loginBtn, forgotPassBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +28,9 @@ public class Login extends Activity implements View.OnClickListener {
 
         registerBtn = findViewById(R.id.button2);
         registerBtn.setOnClickListener(this);
+
+        forgotPassBtn = findViewById(R.id.button3);
+        forgotPassBtn.setOnClickListener(this);
 
         username = (EditText) findViewById(R.id.editText1);
         password = (EditText) findViewById(R.id.editText2);
@@ -46,6 +49,7 @@ public class Login extends Activity implements View.OnClickListener {
         if (v == registerBtn) {
             Intent intent = new Intent(Login.this, Cadastro.class);
             startActivity(intent);
+            finish();
         }
 
         if (v == loginBtn) {
@@ -62,9 +66,10 @@ public class Login extends Activity implements View.OnClickListener {
                                     case DONE:
                                         Intent intent = new Intent(Login.this, Home.class);
                                         startActivity(intent);
+                                        finish();
                                         break;
                                     default:
-                                        Toast.makeText(getApplicationContext(), "Unsupported sign-in confirmation:" + signInResult.getSignInState(), Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(getApplicationContext(), "ERRO", Toast.LENGTH_SHORT).show();
                                         break;
                                 }
                             }
@@ -82,6 +87,12 @@ public class Login extends Activity implements View.OnClickListener {
                     }
                 });
             }
+        }
+
+        if(v == forgotPassBtn) {
+            Intent intent = new Intent(Login.this, EsqueciSenha.class);
+            startActivity(intent);
+            finish();
         }
     }
 }

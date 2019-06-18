@@ -16,7 +16,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".CadastroConfirmar"></activity>
+        <activity android:name=".ResetarSenha"></activity>
+        <activity android:name=".EsqueciSenha" />
+        <activity android:name=".CadastroConfirmar" />
         <activity android:name=".AuthenticationActivity" />
         <activity android:name=".PerguntasDisponiveis" />
         <activity android:name=".Conta" />

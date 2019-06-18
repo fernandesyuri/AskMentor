@@ -26,6 +26,9 @@
             "auth": {
                 "askMentorCognito": {
                     "facebookAppId": "1254593851357640"
+                },
+                "askMentorLogin": {
+                    "facebookAppId": "1254593851357640"
                 }
             }
         }

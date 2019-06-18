@@ -10,6 +10,7 @@
     <string name="code">Código de Confirmação</string>
     <string name="password">Senha</string>
     <string name="repeat_password">Repetir Senha</string>
+    <string name="forgot_password">Esqueci a Senha</string>
     <string name="register">CADASTRAR</string>
     <string name="confirmRegister">CONFIRMAR</string>
     <string name="login_btn">ENTRAR</string>
