@@ -50,6 +50,7 @@ public class CadastroConfirmar extends AppCompatActivity implements View.OnClick
                                 Toast.makeText(getApplicationContext(), "Cadastrado com Sucesso!", Toast.LENGTH_LONG).show();
                                 Intent intent = new Intent(CadastroConfirmar.this, Login.class);
                                 startActivity(intent);
+                                finish();
                             }
                         }
                     });

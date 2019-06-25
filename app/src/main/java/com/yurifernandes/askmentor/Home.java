@@ -24,7 +24,6 @@ import java.util.Map;
 
 public class Home extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private TextView name, email;
-    private String teste;
     final Map<String, String> attributes = new HashMap<>();
 
     @Override
