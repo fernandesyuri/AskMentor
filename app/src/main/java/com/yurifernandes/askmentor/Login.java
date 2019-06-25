@@ -3,7 +3,6 @@ package com.yurifernandes.askmentor;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -35,6 +34,9 @@ public class Login extends Activity implements View.OnClickListener {
         username = (EditText) findViewById(R.id.editText1);
         password = (EditText) findViewById(R.id.editText2);
 
+        username.setText("otaviopalma@gmail.com");
+        password.setText("testeqwerty");
+
         AWSMobileClient.getInstance().initialize(getApplicationContext(), new Callback<UserStateDetails>() {
                 @Override
                 public void onResult(UserStateDetails userStateDetails) {}
@@ -47,7 +49,7 @@ public class Login extends Activity implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         if (v == registerBtn) {
-            Intent intent = new Intent(Login.this, Cadastro.class);
+            Intent intent = new Intent(Login.this, Home.class);
             startActivity(intent);
             finish();
         }
@@ -64,7 +66,7 @@ public class Login extends Activity implements View.OnClickListener {
                             public void run() {
                                 switch (signInResult.getSignInState()) {
                                     case DONE:
-                                        Intent intent = new Intent(Login.this, Home.class);
+                                        Intent intent = new Intent(Login.this, ChatActivity.class);
                                         startActivity(intent);
                                         finish();
                                         break;
