@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
@@ -12,15 +13,46 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+
+import com.amazonaws.amplify.generated.graphql.AllQuestionQuery;
+import com.amazonaws.mobile.client.AWSMobileClient;
+import com.amazonaws.mobile.config.AWSConfiguration;
+import com.amazonaws.mobileconnectors.appsync.AWSAppSyncClient;
+import com.amazonaws.mobileconnectors.appsync.fetcher.AppSyncResponseFetchers;
+import com.amazonaws.mobileconnectors.appsync.sigv4.CognitoUserPoolsAuthProvider;
+import com.apollographql.apollo.GraphQLCall;
+import com.apollographql.apollo.api.Error;
+import com.apollographql.apollo.api.Response;
+import com.apollographql.apollo.exception.ApolloException;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.Nonnull;
+
 public class PerguntasDisponiveis extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+
+    private AWSAppSyncClient mAWSAppSyncClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_perguntas_disponiveis);
+
+        mAWSAppSyncClient = AWSAppSyncClient.builder()
+                .context(getApplicationContext())
+                .awsConfiguration(new AWSConfiguration(getApplicationContext()))
+                .cognitoUserPoolsAuthProvider(new CognitoUserPoolsAuthProvider() {
+                    @Override
+                    public String getLatestAuthToken() {
+                        try {
+                            return AWSMobileClient.getInstance().getTokens().getIdToken().getTokenString();
+                        } catch (Exception e) {
+                            Log.e("APPSYNC_ERROR", e.getLocalizedMessage());
+                            return e.getLocalizedMessage();
+                        }
+                    }
+                }).build();
 
         //Navigation Drawer
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -37,8 +69,10 @@ public class PerguntasDisponiveis extends AppCompatActivity implements Navigatio
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
 
+        query();
 
         //List View
+        /*
         List<String> teste = new ArrayList<>();
         teste.add("Pergunta1");
         teste.add("Pergunta2");
@@ -46,6 +80,61 @@ public class PerguntasDisponiveis extends AppCompatActivity implements Navigatio
         ListView listaTeste = (ListView) findViewById(R.id.listView);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, teste);
         listaTeste.setAdapter(adapter);
+        */
+    }
+
+    public void query() {
+        mAWSAppSyncClient.query(AllQuestionQuery.builder().build())
+                .responseFetcher(AppSyncResponseFetchers.CACHE_AND_NETWORK)
+                .enqueue(allQuestionCallback);
+    }
+
+    private GraphQLCall.Callback<AllQuestionQuery.Data> allQuestionCallback = new GraphQLCall.Callback<AllQuestionQuery.Data>() {
+        @Override
+        public void onResponse(@Nonnull Response<AllQuestionQuery.Data> response) {
+
+            if (!response.hasErrors()) {
+                List<String> questionList = new ArrayList<>();
+
+                for (AllQuestionQuery.AllQuestion question : response.data().allQuestion()) { // Para todas as perguntas
+                    if (!question.sender().equals(AWSMobileClient.getInstance().getUsername())) { // Se a pergunta não for de autoria própria
+                        questionList.add(question.content()); // Adiciona na lista de perguntas disponíveis
+                    }
+                }
+
+                if (!questionList.isEmpty()) {
+                    updateQuestionList(questionList);
+                }
+
+            } else {
+                for (Error error : response.errors()) {
+                    Log.e("###Response", error.message());
+                }
+            }
+        }
+
+        @Override
+        public void onFailure(@Nonnull ApolloException e) {
+            Log.e("###ERROR", e.toString());
+        }
+    };
+
+    private void updateQuestionList(List<String> questionList) {
+
+        final ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, questionList);
+
+        runOnUiThread(new Runnable() {
+
+            @Override
+            public void run() {
+
+                // Stuff that updates the UI
+                ListView questionsListView = (ListView) findViewById(R.id.listView);
+                questionsListView.setAdapter(adapter);
+            }
+        });
+
+
     }
 
     @Override

@@ -9,14 +9,24 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.amazonaws.amplify.generated.graphql.CreateUserMutation;
 import com.amazonaws.mobile.client.AWSMobileClient;
 import com.amazonaws.mobile.client.Callback;
 import com.amazonaws.mobile.client.UserStateDetails;
 import com.amazonaws.mobile.client.results.SignInResult;
+import com.amazonaws.mobile.config.AWSConfiguration;
+import com.amazonaws.mobileconnectors.appsync.AWSAppSyncClient;
+import com.amazonaws.mobileconnectors.appsync.sigv4.CognitoUserPoolsAuthProvider;
+import com.apollographql.apollo.GraphQLCall;
+import com.apollographql.apollo.api.Response;
+import com.apollographql.apollo.exception.ApolloException;
+
+import javax.annotation.Nonnull;
 
 public class Login extends Activity implements View.OnClickListener {
     private EditText username, password;
     private Button registerBtn, loginBtn, forgotPassBtn;
+    private AWSAppSyncClient mAWSAppSyncClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,14 +45,56 @@ public class Login extends Activity implements View.OnClickListener {
         username = (EditText) findViewById(R.id.editText1);
         password = (EditText) findViewById(R.id.editText2);
 
+        username.setText("contato@yurifernandes.com");
+        password.setText("teste123");
+
         AWSMobileClient.getInstance().initialize(getApplicationContext(), new Callback<UserStateDetails>() {
-                @Override
-                public void onResult(UserStateDetails userStateDetails) {}
-                @Override
-                public void onError(Exception e) {}
-            }
+                    @Override
+                    public void onResult(UserStateDetails userStateDetails) {
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                    }
+                }
         );
     }
+
+    public void mutation() {
+
+        mAWSAppSyncClient = AWSAppSyncClient.builder()
+                .context(getApplicationContext())
+                .awsConfiguration(new AWSConfiguration(getApplicationContext()))
+                .cognitoUserPoolsAuthProvider(new CognitoUserPoolsAuthProvider() {
+                    @Override
+                    public String getLatestAuthToken() {
+                        try {
+                            return AWSMobileClient.getInstance().getTokens().getIdToken().getTokenString();
+                        } catch (Exception e) {
+                            Log.e("APPSYNC_ERROR", e.getLocalizedMessage());
+                            return e.getLocalizedMessage();
+                        }
+                    }
+                }).build();
+
+        CreateUserMutation createUserMutation = CreateUserMutation.builder()
+                .username(AWSMobileClient.getInstance().getUsername())
+                .build();
+
+        mAWSAppSyncClient.mutate(createUserMutation).enqueue(mutationCallback);
+    }
+
+    private GraphQLCall.Callback<CreateUserMutation.Data> mutationCallback = new GraphQLCall.Callback<CreateUserMutation.Data>() {
+        @Override
+        public void onResponse(@Nonnull Response<CreateUserMutation.Data> response) {
+            Log.i("###Results", "Added User");
+        }
+
+        @Override
+        public void onFailure(@Nonnull ApolloException e) {
+            Log.e("###Error", e.toString());
+        }
+    };
 
     @Override
     public void onClick(View v) {
@@ -64,6 +116,9 @@ public class Login extends Activity implements View.OnClickListener {
                             public void run() {
                                 switch (signInResult.getSignInState()) {
                                     case DONE:
+
+                                        mutation();
+
                                         Intent intent = new Intent(Login.this, Home.class);
                                         startActivity(intent);
                                         finish();
@@ -89,7 +144,7 @@ public class Login extends Activity implements View.OnClickListener {
             }
         }
 
-        if(v == forgotPassBtn) {
+        if (v == forgotPassBtn) {
             Intent intent = new Intent(Login.this, EsqueciSenha.class);
             startActivity(intent);
             finish();
