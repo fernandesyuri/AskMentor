@@ -11,20 +11,65 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
+
+import com.amazonaws.amplify.generated.graphql.AllUserQuery;
+import com.amazonaws.amplify.generated.graphql.CreateQuestionMutation;
+import com.amazonaws.amplify.generated.graphql.SubscribeToNewQuestionSubscription;
 import com.amazonaws.mobile.client.AWSMobileClient;
 import com.amazonaws.mobile.client.Callback;
+import com.amazonaws.mobile.config.AWSConfiguration;
+import com.amazonaws.mobileconnectors.appsync.AWSAppSyncClient;
+import com.amazonaws.mobileconnectors.appsync.AppSyncSubscriptionCall;
+import com.amazonaws.mobileconnectors.appsync.fetcher.AppSyncResponseFetchers;
+import com.amazonaws.mobileconnectors.appsync.sigv4.CognitoUserPoolsAuthProvider;
+import com.apollographql.apollo.GraphQLCall;
+import com.apollographql.apollo.api.Error;
+import com.apollographql.apollo.api.Response;
+import com.apollographql.apollo.exception.ApolloException;
+
+import java.sql.Timestamp;
+import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.Nonnull;
+
 public class Home extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
+    private AppSyncSubscriptionCall subscriptionWatcher;
+    private AWSAppSyncClient mAWSAppSyncClient;
     private TextView name, email;
     private ImageButton camera;
+    private EditText etQuestion;
+    private Button btnQuestion;
+    final Map<String, String> attributes = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        etQuestion = findViewById(R.id.editTextQuestion);
+        btnQuestion = findViewById(R.id.buttonQuestion);
+        btnQuestion.setOnClickListener(this);
+
+        mAWSAppSyncClient = AWSAppSyncClient.builder()
+                .context(getApplicationContext())
+                .awsConfiguration(new AWSConfiguration(getApplicationContext()))
+                .cognitoUserPoolsAuthProvider(new CognitoUserPoolsAuthProvider() {
+                    @Override
+                    public String getLatestAuthToken() {
+                        try {
+                            return AWSMobileClient.getInstance().getTokens().getIdToken().getTokenString();
+                        } catch (Exception e) {
+                            Log.e("APPSYNC_ERROR", e.getLocalizedMessage());
+                            return e.getLocalizedMessage();
+                        }
+                    }
+                }).build();
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -54,10 +99,100 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
             }
 
             @Override
-            public void onError(Exception e) {}
+            public void onError(Exception e) {
+            }
         });
 
+        SubscribeToNewQuestionSubscription subscription = SubscribeToNewQuestionSubscription.builder().build();
+        subscriptionWatcher = mAWSAppSyncClient.subscribe(subscription);
+        subscriptionWatcher.execute(subCallback);
+
+        // query();
     }
+
+    private AppSyncSubscriptionCall.Callback subCallback = new AppSyncSubscriptionCall.Callback() {
+        @Override
+        public void onResponse(@Nonnull Response response) {
+            Log.i("###Response", response.data().toString());
+        }
+
+        @Override
+        public void onFailure(@Nonnull ApolloException e) {
+            Log.e("###Error", e.toString());
+        }
+
+        @Override
+        public void onCompleted() {
+            Log.i("###Completed", "Subscription completed");
+        }
+    };
+
+    public void query() {
+        mAWSAppSyncClient.query(AllUserQuery.builder().build())
+                .responseFetcher(AppSyncResponseFetchers.CACHE_AND_NETWORK)
+                .enqueue(allUserCallback);
+    }
+
+    private GraphQLCall.Callback<AllUserQuery.Data> allUserCallback = new GraphQLCall.Callback<AllUserQuery.Data>() {
+        @Override
+        public void onResponse(@Nonnull Response<AllUserQuery.Data> response) {
+            for (AllUserQuery.AllUser user : response.data().allUser()) {
+                Log.i("###Online", user.username());
+            }
+            //Log.i("###Results", response.data().allUser());
+        }
+
+        @Override
+        public void onFailure(@Nonnull ApolloException e) {
+            Log.e("###ERROR", e.toString());
+        }
+    };
+
+
+    public void mutation() {
+
+        mAWSAppSyncClient = AWSAppSyncClient.builder()
+                .context(getApplicationContext())
+                .awsConfiguration(new AWSConfiguration(getApplicationContext()))
+                .cognitoUserPoolsAuthProvider(new CognitoUserPoolsAuthProvider() {
+                    @Override
+                    public String getLatestAuthToken() {
+                        try {
+                            return AWSMobileClient.getInstance().getTokens().getIdToken().getTokenString();
+                        } catch (Exception e) {
+                            Log.e("APPSYNC_ERROR", e.getLocalizedMessage());
+                            return e.getLocalizedMessage();
+                        }
+                    }
+                }).build();
+
+        CreateQuestionMutation createQuestionMutation = CreateQuestionMutation.builder()
+                .content(etQuestion.getText().toString())
+                .createdAt(new Timestamp(System.currentTimeMillis()).toString())
+                .sender(AWSMobileClient.getInstance().getUsername())
+                .build();
+
+        mAWSAppSyncClient.mutate(createQuestionMutation).enqueue(mutationCallback);
+    }
+
+    private GraphQLCall.Callback<CreateQuestionMutation.Data> mutationCallback = new GraphQLCall.Callback<CreateQuestionMutation.Data>() {
+        @Override
+        public void onResponse(@Nonnull Response<CreateQuestionMutation.Data> response) {
+            if (response.hasErrors()) {
+                for (Error error : response.errors()) {
+                    Log.i("###ERROR", error.message());
+                }
+            } else {
+                Log.i("###Results", "Added Question");
+            }
+        }
+
+        @Override
+        public void onFailure(@Nonnull ApolloException e) {
+            Log.e("###Error", e.toString());
+        }
+    };
+
 
     @Override
     public void onBackPressed() {
@@ -116,10 +251,13 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
     }
 
     @Override
-    public void onClick(View view) {
-        if(view == camera) {
+    public void onClick(View v) {
+        if (v == btnQuestion) {
+            Log.v("###BtnPress", "btnQuestion");
+            mutation();
+        }
+        if(v == camera) {
             Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
             startActivity(intent);
         }
     }
-}

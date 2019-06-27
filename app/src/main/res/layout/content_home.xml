@@ -17,7 +17,7 @@
         android:orientation="vertical">
 
         <EditText
-            android:id="@+id/editText1"
+            android:id="@+id/editTextQuestion"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="25dp"
@@ -65,7 +65,7 @@
         android:orientation="vertical">
 
         <Button
-            android:id="@+id/button1"
+            android:id="@+id/buttonQuestion"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="100dp"
