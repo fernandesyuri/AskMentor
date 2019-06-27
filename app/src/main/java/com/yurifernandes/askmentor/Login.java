@@ -45,7 +45,7 @@ public class Login extends Activity implements View.OnClickListener {
         username = (EditText) findViewById(R.id.editText1);
         password = (EditText) findViewById(R.id.editText2);
 
-        username.setText("contato@yurifernandes.com");
+        username.setText("otaviopalma@gmail.com");
         password.setText("teste123");
 
         AWSMobileClient.getInstance().initialize(getApplicationContext(), new Callback<UserStateDetails>() {
@@ -92,7 +92,7 @@ public class Login extends Activity implements View.OnClickListener {
 
         @Override
         public void onFailure(@Nonnull ApolloException e) {
-            Log.e("###Error", e.toString());
+            Log.e("###Erro", e.toString());
         }
     };
 

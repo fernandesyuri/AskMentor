@@ -1,9 +1,11 @@
 package com.yurifernandes.askmentor;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.MenuItem;
 import android.support.design.widget.NavigationView;
@@ -12,11 +14,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.amazonaws.amplify.generated.graphql.AllUserQuery;
 import com.amazonaws.amplify.generated.graphql.CreateQuestionMutation;
@@ -184,6 +188,15 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
                     Log.i("###ERROR", error.message());
                 }
             } else {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(Home.this);
+                        builder.setMessage("Perguntada enviada com sucesso");
+                        AlertDialog alerta = builder.create();
+                        alerta.show();
+                    }
+                });
                 Log.i("###Results", "Added Question");
             }
         }

@@ -1,9 +1,11 @@
 package com.yurifernandes.askmentor;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.MenuItem;
 import android.support.design.widget.NavigationView;
@@ -11,8 +13,11 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.amazonaws.amplify.generated.graphql.AllQuestionQuery;
 import com.amazonaws.mobile.client.AWSMobileClient;
@@ -119,17 +124,33 @@ public class PerguntasDisponiveis extends AppCompatActivity implements Navigatio
         }
     };
 
-    private void updateQuestionList(List<String> questionList) {
+    private void updateQuestionList(final List<String> questionList) {
 
         final ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, questionList);
 
         runOnUiThread(new Runnable() {
-
             @Override
             public void run() {
-
-                // Stuff that updates the UI
                 ListView questionsListView = (ListView) findViewById(R.id.listView);
+                questionsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(PerguntasDisponiveis.this);
+                        builder.setMessage("Pergunta " + i);
+                        builder.setPositiveButton("Positivo", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface arg0, int arg1) {
+                                Toast.makeText(PerguntasDisponiveis.this, "positivo=" + arg1, Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        builder.setNegativeButton("Negativo", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface arg0, int arg1) {
+                                Toast.makeText(PerguntasDisponiveis.this, "negativo=" + arg1, Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        AlertDialog alerta = builder.create();
+                        alerta.show();
+                    }
+                });
                 questionsListView.setAdapter(adapter);
             }
         });
