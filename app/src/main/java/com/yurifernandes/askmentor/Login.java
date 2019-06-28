@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amazonaws.amplify.generated.graphql.CreateUserMutation;
@@ -20,6 +21,8 @@ import com.amazonaws.mobileconnectors.appsync.sigv4.CognitoUserPoolsAuthProvider
 import com.apollographql.apollo.GraphQLCall;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.exception.ApolloException;
+
+import java.util.Map;
 
 import javax.annotation.Nonnull;
 
@@ -77,11 +80,22 @@ public class Login extends Activity implements View.OnClickListener {
                     }
                 }).build();
 
-        CreateUserMutation createUserMutation = CreateUserMutation.builder()
-                .username(AWSMobileClient.getInstance().getUsername())
-                .build();
+        AWSMobileClient.getInstance().getUserAttributes(new Callback<Map<String, String>>() {
+            @Override
+            public void onResult(Map<String, String> result) {
 
-        mAWSAppSyncClient.mutate(createUserMutation).enqueue(mutationCallback);
+                CreateUserMutation createUserMutation = CreateUserMutation.builder()
+                        .username(result.get("email"))
+                        .name(result.get("name"))
+                        .build();
+
+                mAWSAppSyncClient.mutate(createUserMutation).enqueue(mutationCallback);
+            }
+
+            @Override
+            public void onError(Exception e) {
+            }
+        });
     }
 
     private GraphQLCall.Callback<CreateUserMutation.Data> mutationCallback = new GraphQLCall.Callback<CreateUserMutation.Data>() {

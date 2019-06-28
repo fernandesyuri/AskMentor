@@ -1,8 +1,12 @@
 package com.yurifernandes.askmentor.ChatFolder;
 
-import java.util.ArrayList;
+import com.yurifernandes.askmentor.ChatController;
 
-public class ChatPresenter implements ChatContract.Presenter {
+import java.util.ArrayList;
+import java.util.Observable;
+import java.util.Observer;
+
+public class ChatPresenter implements ChatContract.Presenter, Observer {
 
     private ArrayList<ChatObject> chatObjects;
     private ChatContract.View view;
@@ -39,9 +43,18 @@ public class ChatPresenter implements ChatContract.Presenter {
 
         // Add it to the list and tell the adapter we added something
         this.chatObjects.add(inputObject);
+        ChatController.getInstance().enviarMensagem(inputText);
         view.notifyAdapterObjectAdded(chatObjects.size() - 1);
 
         // Also scroll down if we aren't at the bottom already
         view.scrollChatDown();
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+        ChatResponse receivedMessage = new ChatResponse();
+        receivedMessage.setText((String)arg);
+        chatObjects.add(receivedMessage);
+        view.notifyAdapterObjectAdded(chatObjects.size() - 1);
     }
 }

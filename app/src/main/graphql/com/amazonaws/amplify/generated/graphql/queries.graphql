@@ -5,6 +5,7 @@ query AllQuestion {
       cognitoId
       id
       username
+      name
       registered
     }
     content
@@ -20,6 +21,7 @@ query AllMessage($after: String, $conversationId: ID!, $first: Int) {
       cognitoId
       id
       username
+      name
       registered
     }
     content
@@ -31,6 +33,7 @@ query AllMessage($after: String, $conversationId: ID!, $first: Int) {
       cognitoId
       id
       username
+      name
       registered
     }
     sender
@@ -69,6 +72,7 @@ query AllMessageFrom(
       cognitoId
       id
       username
+      name
       registered
     }
     content
@@ -80,6 +84,7 @@ query AllMessageFrom(
       cognitoId
       id
       username
+      name
       registered
     }
     sender
@@ -96,6 +101,7 @@ query AllUser($after: String, $first: Int) {
       nextToken
     }
     username
+    name
     registered
   }
 }
@@ -110,6 +116,7 @@ query Me {
       nextToken
     }
     username
+    name
     registered
   }
 }

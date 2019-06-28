@@ -32,12 +32,15 @@ import com.apollographql.apollo.exception.ApolloException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
 import javax.annotation.Nonnull;
 
-public class PerguntasDisponiveis extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class PerguntasDisponiveis extends AppCompatActivity implements Observer, NavigationView.OnNavigationItemSelectedListener {
 
     private AWSAppSyncClient mAWSAppSyncClient;
+    private PerguntasSubscription perguntasSubscription;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +77,9 @@ public class PerguntasDisponiveis extends AppCompatActivity implements Navigatio
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
 
+        perguntasSubscription = new PerguntasSubscription(mAWSAppSyncClient); // Escutador de novas perguntas
+        perguntasSubscription.addObserver(this);
+
         query();
 
         //List View
@@ -90,7 +96,7 @@ public class PerguntasDisponiveis extends AppCompatActivity implements Navigatio
 
     public void query() {
         mAWSAppSyncClient.query(AllQuestionQuery.builder().build())
-                .responseFetcher(AppSyncResponseFetchers.CACHE_AND_NETWORK)
+                .responseFetcher(AppSyncResponseFetchers.NETWORK_ONLY)
                 .enqueue(allQuestionCallback);
     }
 
@@ -100,15 +106,17 @@ public class PerguntasDisponiveis extends AppCompatActivity implements Navigatio
 
             if (!response.hasErrors()) {
                 List<String> questionList = new ArrayList<>();
+                List<String> questionSenderList = new ArrayList<>();
 
                 for (AllQuestionQuery.AllQuestion question : response.data().allQuestion()) { // Para todas as perguntas
-                    if (!question.sender().equals(AWSMobileClient.getInstance().getUsername())) { // Se a pergunta não for de autoria própria
+                    if (!question.sender().equals(UserData.getInstance().id)) { // Se a pergunta não for de autoria própria
                         questionList.add(question.content()); // Adiciona na lista de perguntas disponíveis
+                        questionSenderList.add(question.sender());
                     }
                 }
 
                 if (!questionList.isEmpty()) {
-                    updateQuestionList(questionList);
+                    updateQuestionList(questionList, questionSenderList);
                 }
 
             } else {
@@ -124,7 +132,7 @@ public class PerguntasDisponiveis extends AppCompatActivity implements Navigatio
         }
     };
 
-    private void updateQuestionList(final List<String> questionList) {
+    private void updateQuestionList(final List<String> questionList, final List<String> questionSenderList) {
 
         final ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, questionList);
 
@@ -134,17 +142,23 @@ public class PerguntasDisponiveis extends AppCompatActivity implements Navigatio
                 ListView questionsListView = (ListView) findViewById(R.id.listView);
                 questionsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
-                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    public void onItemClick(AdapterView<?> adapterView, View view, final int i, long l) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(PerguntasDisponiveis.this);
-                        builder.setMessage("Pergunta " + i);
-                        builder.setPositiveButton("Positivo", new DialogInterface.OnClickListener() {
+                        builder.setMessage(questionList.get(i));
+                        builder.setPositiveButton("Responder", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface arg0, int arg1) {
-                                Toast.makeText(PerguntasDisponiveis.this, "positivo=" + arg1, Toast.LENGTH_SHORT).show();
+                                //Toast.makeText(PerguntasDisponiveis.this, "positivo=" + arg1, Toast.LENGTH_SHORT).show();
+                                ChatController chatController = ChatController.getInstance();
+                                chatController.setmAWSAppSyncClient(mAWSAppSyncClient);
+                                chatController.startConversationWith(questionSenderList.get(i));
+                                Intent i = new Intent(PerguntasDisponiveis.this, ChatActivity.class); //??
+                                startActivity(i);
+                                PerguntasDisponiveis.this.finish();
                             }
                         });
-                        builder.setNegativeButton("Negativo", new DialogInterface.OnClickListener() {
+                        builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface arg0, int arg1) {
-                                Toast.makeText(PerguntasDisponiveis.this, "negativo=" + arg1, Toast.LENGTH_SHORT).show();
+                                //Toast.makeText(PerguntasDisponiveis.this, "negativo=" + arg1, Toast.LENGTH_SHORT).show();
                             }
                         });
                         AlertDialog alerta = builder.create();
@@ -200,6 +214,13 @@ public class PerguntasDisponiveis extends AppCompatActivity implements Navigatio
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
+        perguntasSubscription = null;
+        this.finish();
         return true;
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+        query();
     }
 }

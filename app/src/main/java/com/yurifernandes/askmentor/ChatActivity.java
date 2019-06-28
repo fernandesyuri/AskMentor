@@ -11,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
@@ -60,7 +61,8 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         AWSMobileClient.getInstance().getUserAttributes(new Callback<Map<String, String>>() {
             @Override
             public void onResult(Map<String, String> result) {
-                getSupportActionBar().setTitle(result.get("name"));
+                //getSupportActionBar().setTitle(result.get("name"));
+                getSupportActionBar().setTitle(ChatController.getInstance().anotherUserRealName);
             }
 
             @Override
@@ -73,6 +75,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
 
         // Instantiate presenter and attach view
         this.presenter = new ChatPresenter();
+        ChatController.getInstance().addObserver(this.presenter);
         presenter.attachView(this);
 
         // Instantiate the adapter and give it the list of chat objects
@@ -108,8 +111,14 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
-    public void notifyAdapterObjectAdded(int position) {
-        this.chatAdapter.notifyItemInserted(position);
+    public void notifyAdapterObjectAdded(final int position) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                ChatActivity.this.chatAdapter.notifyItemInserted(position);
+            }
+        });
+        //this.chatAdapter.notifyItemInserted(position);
     }
 
     @Override

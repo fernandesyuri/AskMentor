@@ -1,14 +1,11 @@
 # this is an auto generated file. This will be overwritten
-mutation CreateQuestion(
-  $content: String
-  $sender: String!
-  $createdAt: String!
-) {
-  createQuestion(content: $content, sender: $sender, createdAt: $createdAt) {
+mutation CreateQuestion($content: String, $createdAt: String!) {
+  createQuestion(content: $content, createdAt: $createdAt) {
     author {
       cognitoId
       id
       username
+      name
       registered
     }
     content
@@ -18,8 +15,8 @@ mutation CreateQuestion(
     sender
   }
 }
-mutation CreateConversation($createdAt: String, $id: ID!, $name: String!) {
-  createConversation(createdAt: $createdAt, id: $id, name: $name) {
+mutation CreateConversation($createdAt: String, $name: String!) {
+  createConversation(createdAt: $createdAt, name: $name) {
     createdAt
     id
     messages {
@@ -30,9 +27,9 @@ mutation CreateConversation($createdAt: String, $id: ID!, $name: String!) {
 }
 mutation CreateMessage(
   $content: String
-  $conversationId: ID!
+  $conversationId: ID
   $createdAt: String!
-  $id: ID!
+  $id: ID
 ) {
   createMessage(
     content: $content
@@ -44,6 +41,7 @@ mutation CreateMessage(
       cognitoId
       id
       username
+      name
       registered
     }
     content
@@ -55,13 +53,14 @@ mutation CreateMessage(
       cognitoId
       id
       username
+      name
       registered
     }
     sender
   }
 }
-mutation CreateUser($username: String!) {
-  createUser(username: $username) {
+mutation CreateUser($username: String!, $name: String!) {
+  createUser(username: $username, name: $name) {
     cognitoId
     conversations {
       nextToken
@@ -71,6 +70,7 @@ mutation CreateUser($username: String!) {
       nextToken
     }
     username
+    name
     registered
   }
 }
@@ -90,6 +90,7 @@ mutation CreateUserConversations($conversationId: ID!, $userId: ID!) {
       cognitoId
       id
       username
+      name
       registered
     }
     userId

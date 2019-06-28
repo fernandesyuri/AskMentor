@@ -2,7 +2,7 @@ package com.yurifernandes.askmentor;
 
 import android.util.Log;
 
-import com.amazonaws.amplify.generated.graphql.SubscribeToNewQuestionSubscription;
+import com.amazonaws.amplify.generated.graphql.SubscribeToNewUCsSubscription;
 import com.amazonaws.mobile.client.AWSMobileClient;
 import com.amazonaws.mobileconnectors.appsync.AWSAppSyncClient;
 import com.amazonaws.mobileconnectors.appsync.AppSyncSubscriptionCall;
@@ -13,16 +13,18 @@ import java.util.Observable;
 
 import javax.annotation.Nonnull;
 
-public class PerguntasSubscription extends Observable {
+public class UCSubscription extends Observable {
 
     private AppSyncSubscriptionCall subscriptionWatcher;
     private String myUser;
 
-    public PerguntasSubscription(AWSAppSyncClient mAWSAppSyncClient) {
+    public UCSubscription(AWSAppSyncClient mAWSAppSyncClient) {
 
         myUser = AWSMobileClient.getInstance().getUsername();
 
-        SubscribeToNewQuestionSubscription subscription = SubscribeToNewQuestionSubscription.builder().build();
+        SubscribeToNewUCsSubscription subscription = SubscribeToNewUCsSubscription.builder()
+                .userId(UserData.getInstance().id)
+                .build();
         subscriptionWatcher = mAWSAppSyncClient.subscribe(subscription);
         subscriptionWatcher.execute(subCallback);
     }
@@ -30,9 +32,14 @@ public class PerguntasSubscription extends Observable {
     private AppSyncSubscriptionCall.Callback subCallback = new AppSyncSubscriptionCall.Callback() {
         @Override
         public void onResponse(@Nonnull Response response) {
-            Log.i("###Subscription", response.data().toString());
+            Log.v("###UC Subscription", response.data().toString());
+
+            String[] split = response.data().toString().split(", conversationId=");
+            String conversationId = split[1].split(", userId=")[0];
+
             setChanged();
-            notifyObservers();
+            notifyObservers(conversationId);
+
         }
 
         @Override

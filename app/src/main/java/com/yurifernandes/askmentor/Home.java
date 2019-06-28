@@ -1,7 +1,9 @@
 package com.yurifernandes.askmentor;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -40,10 +42,12 @@ import com.apollographql.apollo.exception.ApolloException;
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Observable;
+import java.util.Observer;
 
 import javax.annotation.Nonnull;
 
-public class Home extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
+public class Home extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener, Observer {
 
     private AWSAppSyncClient mAWSAppSyncClient;
     private TextView name, email;
@@ -51,7 +55,8 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
     private EditText etQuestion;
     private Button btnQuestion;
     final Map<String, String> attributes = new HashMap<>();
-    private PerguntasSubscription perguntasSubscription;
+    //private PerguntasSubscription perguntasSubscription;
+    private UCSubscription ucSubscription;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,19 +102,33 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         AWSMobileClient.getInstance().getUserAttributes(new Callback<Map<String, String>>() {
             @Override
             public void onResult(Map<String, String> result) {
-                name = (TextView) findViewById(R.id.navName);
-                name.setText(result.get("name"));
+                UserData.getInstance().name = result.get("name");
+                UserData.getInstance().userName = result.get("email");
+                UserData.getInstance().id = result.get("sub");
+                Log.v("###", "Usuario: " + UserData.getInstance().name + " -- " + UserData.getInstance().id);
 
-                email = (TextView) findViewById(R.id.navEmail);
-                email.setText(result.get("email"));
+                ucSubscription = new UCSubscription(mAWSAppSyncClient);
+                ucSubscription.addObserver(Home.this);
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        name = (TextView) findViewById(R.id.navName);
+                        name.setText(UserData.getInstance().name);
+                        email = (TextView) findViewById(R.id.navEmail);
+                        email.setText(UserData.getInstance().userName);
+                    }
+                });
             }
 
             @Override
             public void onError(Exception e) {
+                Log.e("###", e.getMessage() + "\n" + e.getCause());
+                e.printStackTrace();
             }
         });
 
-        perguntasSubscription = new PerguntasSubscription(mAWSAppSyncClient); // Escutador de novas perguntas
+        // perguntasSubscription = new PerguntasSubscription(mAWSAppSyncClient); // Escutador de novas perguntas
 
         // query();
     }
@@ -156,7 +175,6 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         CreateQuestionMutation createQuestionMutation = CreateQuestionMutation.builder()
                 .content(etQuestion.getText().toString())
                 .createdAt(new Timestamp(System.currentTimeMillis()).toString())
-                .sender(AWSMobileClient.getInstance().getUsername())
                 .build();
 
         mAWSAppSyncClient.mutate(createQuestionMutation).enqueue(mutationCallback);
@@ -243,6 +261,8 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
+        ucSubscription = null;
+        this.finish();
         return true;
     }
 
@@ -256,5 +276,15 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
             Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
             startActivity(intent);
         }
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+        ChatController chatController = ChatController.getInstance();
+        chatController.setmAWSAppSyncClient(mAWSAppSyncClient);
+        chatController.joinConversation((String)arg);
+        Intent i = new Intent(this, ChatActivity.class); //??
+        startActivity(i);
+        this.finish();
     }
 }

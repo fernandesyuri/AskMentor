@@ -5,6 +5,7 @@ subscription SubscribeToNewQuestion {
       cognitoId
       id
       username
+      name
       registered
     }
     content
@@ -20,6 +21,7 @@ subscription SubscribeToNewMessage($conversationId: ID!) {
       cognitoId
       id
       username
+      name
       registered
     }
     content
@@ -31,6 +33,7 @@ subscription SubscribeToNewMessage($conversationId: ID!) {
       cognitoId
       id
       username
+      name
       registered
     }
     sender
@@ -52,6 +55,7 @@ subscription SubscribeToNewUCs($userId: ID!) {
       cognitoId
       id
       username
+      name
       registered
     }
     userId
@@ -68,6 +72,7 @@ subscription SubscribeToNewUsers {
       nextToken
     }
     username
+    name
     registered
   }
 }

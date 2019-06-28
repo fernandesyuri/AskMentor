@@ -2,6 +2,7 @@ package com.yurifernandes.askmentor;
 
 import android.util.Log;
 
+import com.amazonaws.amplify.generated.graphql.SubscribeToNewMessageSubscription;
 import com.amazonaws.amplify.generated.graphql.SubscribeToNewQuestionSubscription;
 import com.amazonaws.mobile.client.AWSMobileClient;
 import com.amazonaws.mobileconnectors.appsync.AWSAppSyncClient;
@@ -13,16 +14,21 @@ import java.util.Observable;
 
 import javax.annotation.Nonnull;
 
-public class PerguntasSubscription extends Observable {
+public class MessagesSubscription extends Observable {
 
     private AppSyncSubscriptionCall subscriptionWatcher;
     private String myUser;
 
-    public PerguntasSubscription(AWSAppSyncClient mAWSAppSyncClient) {
+    public MessagesSubscription(String conversationId, AWSAppSyncClient mAWSAppSyncClient) {
 
         myUser = AWSMobileClient.getInstance().getUsername();
 
-        SubscribeToNewQuestionSubscription subscription = SubscribeToNewQuestionSubscription.builder().build();
+        SubscribeToNewMessageSubscription subscription = SubscribeToNewMessageSubscription.builder()
+                .conversationId(conversationId)
+                .build();
+
+        Log.v("###MSG Subscription", "Trying to subscribe to conversation id " + conversationId);
+
         subscriptionWatcher = mAWSAppSyncClient.subscribe(subscription);
         subscriptionWatcher.execute(subCallback);
     }
@@ -30,19 +36,19 @@ public class PerguntasSubscription extends Observable {
     private AppSyncSubscriptionCall.Callback subCallback = new AppSyncSubscriptionCall.Callback() {
         @Override
         public void onResponse(@Nonnull Response response) {
-            Log.i("###Subscription", response.data().toString());
+            Log.i("###MSG Subscription", response.data().toString());
             setChanged();
-            notifyObservers();
+            notifyObservers(response.data().toString());
         }
 
         @Override
         public void onFailure(@Nonnull ApolloException e) {
-            Log.e("###Subscription", e.toString() + "\n" + e.getCause().toString());
+            Log.e("###MSG Subscription", e.toString() + "\n" + e.getCause().toString());
         }
 
         @Override
         public void onCompleted() {
-            Log.i("###Subscription", "Subscription completed");
+            Log.i("###MSG Subscription", "Subscription completed");
         }
     };
 
