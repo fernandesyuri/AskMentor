@@ -44,13 +44,14 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 
 public class Home extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
-    private AppSyncSubscriptionCall subscriptionWatcher;
+
     private AWSAppSyncClient mAWSAppSyncClient;
     private TextView name, email;
     private ImageButton camera;
     private EditText etQuestion;
     private Button btnQuestion;
     final Map<String, String> attributes = new HashMap<>();
+    private PerguntasSubscription perguntasSubscription;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,29 +109,10 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
             }
         });
 
-        SubscribeToNewQuestionSubscription subscription = SubscribeToNewQuestionSubscription.builder().build();
-        subscriptionWatcher = mAWSAppSyncClient.subscribe(subscription);
-        subscriptionWatcher.execute(subCallback);
+        perguntasSubscription = new PerguntasSubscription(mAWSAppSyncClient); // Escutador de novas perguntas
 
         // query();
     }
-
-    private AppSyncSubscriptionCall.Callback subCallback = new AppSyncSubscriptionCall.Callback() {
-        @Override
-        public void onResponse(@Nonnull Response response) {
-            Log.i("###Response", response.data().toString());
-        }
-
-        @Override
-        public void onFailure(@Nonnull ApolloException e) {
-            Log.e("###Error", e.toString());
-        }
-
-        @Override
-        public void onCompleted() {
-            Log.i("###Completed", "Subscription completed");
-        }
-    };
 
     public void query() {
         mAWSAppSyncClient.query(AllUserQuery.builder().build())
